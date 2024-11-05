@@ -1,9 +1,74 @@
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
-    QTableWidget, QTableWidgetItem, QMessageBox, QComboBox
+    QTableWidget, QTableWidgetItem, QMessageBox, QComboBox,QDialog,QMainWindow
 )
 from PyQt5.QtCore import Qt
 import sys
+class LoginScreen(QDialog):
+    def __init__(self, main_screen):
+        super().__init__(main_screen)
+        self.setWindowTitle("Login")
+        self.setGeometry(100, 100, 300, 300)
+        self.setStyleSheet("background-color: grey;")
+
+        # Etiqueta de instrucciones
+        label_instructions = QLabel("Por favor, ingrese los datos")
+        label_instructions.setStyleSheet("background-color: skyblue;")
+        label_instructions.setAlignment(Qt.AlignCenter)
+
+        # Espaciado
+        label_space_1 = QLabel()
+        label_space_1.setStyleSheet("background-color: grey;")
+
+        # Campos de entrada
+        self.dni_verify = QLineEdit()
+        self.dni_verify.setPlaceholderText("45053765")
+
+        label_space_2 = QLabel()
+        label_space_2.setStyleSheet("background-color: grey;")
+
+        self.password_verify = QLineEdit()
+        self.password_verify.setPlaceholderText("1234")
+        self.password_verify.setEchoMode(QLineEdit.Password)
+
+        # Botón de login
+        login_button = QPushButton("Login")
+        login_button.setStyleSheet("background-color: skyblue;")
+        login_button.clicked.connect(self.login_verify)
+
+        # Espaciado
+        label_space_3 = QLabel()
+        label_space_3.setStyleSheet("background-color: grey;")
+
+        # Botón para volver
+        back_button = QPushButton("Volver")
+        back_button.setStyleSheet("background-color: skyblue;")
+        back_button.clicked.connect(self.close)
+
+        # Layout de la ventana
+        layout = QVBoxLayout()
+        layout.addWidget(label_instructions)
+        layout.addWidget(label_space_1)
+        layout.addWidget(QLabel("Número D.N.I"))
+        layout.addWidget(self.dni_verify)
+        layout.addWidget(label_space_2)
+        layout.addWidget(QLabel("Contraseña"))
+        layout.addWidget(self.password_verify)
+        layout.addWidget(label_space_3)
+        layout.addWidget(login_button)
+        layout.addWidget(back_button)
+        self.setLayout(layout)
+
+    def login_verify(self):
+        dni = self.dni_verify.text()
+        password = self.password_verify.text()
+        
+        # Lógica de verificación de usuario (puede ser una conexión a base de datos)
+        if dni == "1234" and password == "admin":  # Ejemplo de credenciales
+            QMessageBox.information(self, "Login", "Inicio de sesión exitoso")
+            self.accept()  # Cierra la pantalla de login con éxito
+        else:
+            QMessageBox.warning(self, "Login", "D.N.I o contraseña incorrectos")
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -119,13 +184,19 @@ class MainWindow(QWidget):
             self.total_label.setText(f"Total Bimestral: ${total:.2f}")
         except ValueError:
             QMessageBox.warning(self, "Error", "Por favor ingresa valores numéricos válidos en todos los campos.")
+class MainApplication(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.main_window = MainWindow()
+        self.setCentralWidget(self.main_window)
 
-    def cargar_ventas_del_dia(self):
-        # Aquí iría la lógica de conexión a la base de datos
-        pass
+    def iniciar_con_login(self):
+        login_screen = LoginScreen(self)
+        if login_screen.exec_() == QDialog.Accepted:
+            self.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    main_app = MainApplication()
+    main_app.iniciar_con_login()
     sys.exit(app.exec_())
