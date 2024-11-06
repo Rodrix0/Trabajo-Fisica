@@ -1,6 +1,8 @@
-import customtkinter as ctk
+import customtkinter as ctk 
 from tkinter import messagebox
 import tkinter as tk
+#Se tiene que cargar los dos valores el final y el inicial, y los campos deben ser variables que se calculan en base al los valores de inicio y final
+
 
 # Crear la ventana principal
 app = ctk.CTk()
