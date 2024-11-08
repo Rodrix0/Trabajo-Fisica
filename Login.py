@@ -52,23 +52,34 @@ def mostrar_pantalla_calculo():
     boton_calcular.pack(pady=10)
 
     # Etiqueta para mostrar el resultado
-    global total_label_iva
-    global total_label1
-    global total_label2
-    global total_label3
-    global total_label4
+    global monto_label1
+    global monto_label2
+    global monto_label3
+    global monto_label4
+    global alumbrado_publico
+    global label_iva
+    global total_final_label
+ 
 
-    total_label1 = ctk.CTkLabel(app, text="Rango 1: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    total_label2 = ctk.CTkLabel(app, text="Rango 2 Total: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    total_label3 = ctk.CTkLabel(app, text="Rango 3: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    total_label4 = ctk.CTkLabel(app, text="Rango 3: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    total_label_iva = ctk.CTkLabel(app, text="Consumo Total: 0 kWh\nCosto Total con iva(%21): $0.00", font=("Arial", 14))
+    monto_label1 = ctk.CTkLabel(app, text="Rango 1: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    monto_label2 = ctk.CTkLabel(app, text="Rango 2: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    monto_label3 = ctk.CTkLabel(app, text="Rango 3: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    monto_label4 = ctk.CTkLabel(app, text="Rango 4: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    alumbrado_publico = ctk.CTkLabel(app, text="Alumbrado Publico: $0.00", font=("Arial", 14))
 
-    total_label_iva.pack(pady=20)
-    total_label1.pack(pady=20)
-    total_label2.pack(pady=20)
-    total_label3.pack(pady=20)
-    total_label4.pack(pady=20)
+    label_iva = ctk.CTkLabel(app, text="Iva (21%): ", font=("Arial", 14))
+
+    total_final_label = ctk.CTkLabel(app, text="Consumo Total: 0 kWh\nCosto Total con iva(%21): $0.00", font=("Arial", 14))
+
+    monto_label1.pack(pady=20)
+    monto_label2.pack(pady=20)
+    monto_label3.pack(pady=20)
+    monto_label4.pack(pady=20)
+    alumbrado_publico.pack(pady=20)
+
+    label_iva.pack(pady=20)
+    total_final_label.pack(pady=20)
+ 
 
 # Función para calcular el consumo
 def calcular_consumo():
@@ -95,22 +106,29 @@ def calcular_consumo():
         costo_rango3 = rango3 * TARIFA_EXCEDENTE_2
         costo_rango4 = rango4 * TARIFA_EXCEDENTE_3
         costo_total = costo_rango1 + costo_rango2 + costo_rango3 + costo_rango4
+        costo_alumbrado = 4426
 
         # Mostrar resultado en la etiqueta
         texto_rango1 = f"Rango 1: {rango1} kWh\nCosto Rango 1: ${costo_rango1:.2f}"
         texto_rango2 = f"Rango 2: {rango2} kWh\nCosto Rango 2: ${costo_rango2:.2f}"
         texto_rango3 = f"Rango 3: {rango3} kWh\nCosto Rango 3: ${costo_rango3:.2f}"
         texto_rango4 = f"Rango 4: {rango4} kWh\nCosto Rango 4: ${costo_rango4:.2f}"
-        total_iva = f"Consumo Total con iva: {consumo_total + consumo_total * 0.21} kWh\nCosto Total: ${costo_total:.2f}"
+        texto_alumbrado= f"Alumbrado Publico: ${costo_alumbrado:.2f}"
+        iva =  costo_total * 0.21
+        
+        texto_iva = f"IVA consumidor final 21% : {iva}"
+        total_final = f"Consumo Total: {consumo_total} kWh\nIva 21%: ${costo_total:.2f}"
 
         
         
-        total_label1.configure(text=texto_rango1)
-        total_label2.configure(text=texto_rango2)
-        total_label3.configure(text=texto_rango3)
-        total_label4.configure(text=texto_rango4)
-        total_label_iva.configure(text=total_iva)
-
+        monto_label1.configure(text=texto_rango1)
+        monto_label2.configure(text=texto_rango2)
+        monto_label3.configure(text=texto_rango3)
+        monto_label4.configure(text=texto_rango4)
+        alumbrado_publico.configure(text=texto_alumbrado)
+        label_iva.configure(text=texto_iva)
+        total_final_label.configure(text=total_final)
+        
 
     except ValueError:
         messagebox.showwarning("Error", "Por favor ingrese valores numéricos válidos.")
