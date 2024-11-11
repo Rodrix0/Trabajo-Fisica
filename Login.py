@@ -44,6 +44,7 @@ def iniciar_sesion():
 
 # Función para mostrar la pantalla de opciones
 def mostrar_pantalla_opciones():
+
     limpiar_pantalla()
     limpiar_frame(frame_opciones)
     frame_opciones.pack()
@@ -55,6 +56,22 @@ def mostrar_pantalla_opciones():
 
     imprimir_ventas_btn = ctk.CTkButton(frame_opciones, text="Imprimir Ventas", font=("Arial", 16), command=mostrar_pantalla_imprimir)
     imprimir_ventas_btn.pack(pady=10)
+
+global subsidio_var
+global nivel
+global subsidio 
+subsidio = 0
+def actualizar_subsidio(event=None):
+    nivel = subsidio_var.get()
+    if nivel == "Nivel 1":
+        subsidio = 64.778
+    elif nivel == "Nivel 2":
+        subsidio = 21.532
+    elif nivel == "Nivel 3":
+        subsidio = 64.778
+    else:
+        subsidio = 0
+    messagebox.showinfo("Subsidio Seleccionado", f"El subsidio correspondiente para {nivel} es: ${subsidio}") 
 
 # Función para mostrar la pantalla de cálculo de consumo
 def mostrar_pantalla_calculo():
@@ -77,14 +94,26 @@ def mostrar_pantalla_calculo():
     boton_calcular.pack(pady=10)
 
     # Configura tus etiquetas de resultado
-    global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label
+    global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label, subsidio_label
     monto_label1 = ctk.CTkLabel(frame_calcular, text="Consumo primeros 600 kWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label2 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label3 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label4 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     alumbrado_publico = ctk.CTkLabel(frame_calcular, text="Alumbrado Publico: $0.00", font=("Arial", 14))
+
+ # Dropdown para seleccionar nivel de subsidio
+    subsidio_text = ctk.CTkLabel(frame_calcular, text="Seleccione el nivel de subsidio:", font=("Arial", 14))
+    subsidio_text.pack(pady=5)
+
+    # Variable para almacenar el nivel de subsidio seleccionado
+    subsidio_var = tk.StringVar()
+    subsidio_combo = ctk.CTkComboBox(frame_calcular, variable=subsidio_var, values=["Nivel 1", "Nivel 2", "Nivel 3"])
+    subsidio_combo.pack(pady=5)
+    subsidio_combo.bind("<<ComboboxSelected>>", actualizar_subsidio)
+
     label_iva = ctk.CTkLabel(frame_calcular, text="IVA: $0.00", font=("Arial", 14))
-    total_final_label = ctk.CTkLabel(frame_calcular, text="Consumo Total: 0 kWh\nCosto Total con IVA: $0.00", font=("Arial", 14))
+    total_final_label = ctk.CTkLabel(frame_calcular, text="Total Final: $0.00", font=("Arial", 14))
+    
 
     monto_label1.pack(pady=5)
     monto_label2.pack(pady=5)
@@ -92,7 +121,9 @@ def mostrar_pantalla_calculo():
     monto_label4.pack(pady=5)
     alumbrado_publico.pack(pady=5)
     label_iva.pack(pady=5)
+    subsidio_text.pack(pady=5)
     total_final_label.pack(pady=5)
+
 
     # Botón para guardar el cálculo
     boton_guardar = ctk.CTkButton(frame_calcular, text="Guardar Cálculo", command=guardar_calculo)
@@ -100,6 +131,8 @@ def mostrar_pantalla_calculo():
 
     volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=mostrar_pantalla_opciones)
     volver_btn_calcular.pack(pady=10)
+
+
 
 # Función para mostrar la pantalla de impresión de ventas
 def mostrar_pantalla_imprimir():
@@ -121,6 +154,7 @@ def mostrar_pantalla_imprimir():
 
     volver_btn_imprimir = ctk.CTkButton(frame_imprimir, text="Volver", command=mostrar_pantalla_opciones)
     volver_btn_imprimir.pack(pady=10)
+
 
 # Función para calcular el consumo
 def calcular_consumo():
@@ -149,7 +183,11 @@ def calcular_consumo():
         costo_rango3 = rango3 * TARIFA_EXCEDENTE_2
         costo_rango4 = rango4 * TARIFA_EXCEDENTE_3
         costo_total = costo_rango1 + costo_rango2 + costo_rango3 + costo_rango4
+        iva =  costo_total * 0.21
         costo_alumbrado = 4426
+
+        # Total bimestral incluyendo alumbrado público e IVA
+        total_bimestral = costo_total + costo_alumbrado + iva - (consumo_total * subsidio)
 
         # Mostrar resultado en la etiqueta
         texto_rango1 = f"Consumo primeros 600 kWh a $123.9694: {rango1} kWh\nConsumo primeros: ${costo_rango1:.2f}"
@@ -157,10 +195,10 @@ def calcular_consumo():
         texto_rango3 = f"Consumo excedente de 600 KWh/bim 43 KWh a $162.1050: {rango3} kWh\nConsumo excedente: ${costo_rango3:.2f}"
         texto_rango4 = f"Consumo excedente de 600 KWh/bim 503 KWh a $166.6580: {rango4} kWh\nConsumo excedente: ${costo_rango4:.2f}"
         texto_alumbrado= f"Alumbrado Publico: ${costo_alumbrado:.2f}"
-        iva =  costo_total * 0.21
         
-        texto_iva = f"IVA consumidor final 21% : {iva}"
-        total_final = f"Consumo Total: {consumo_total} kWh\nIva 21%: ${costo_total:.2f}"
+        texto_iva = f"IVA consumidor final 21% : {iva:.2f}"
+        texto_total = f"Total final: ${total_bimestral:.2f}"
+    
 
         monto_label1.configure(text=texto_rango1)
         monto_label2.configure(text=texto_rango2)
@@ -168,7 +206,7 @@ def calcular_consumo():
         monto_label4.configure(text=texto_rango4)
         alumbrado_publico.configure(text=texto_alumbrado)
         label_iva.configure(text=texto_iva)
-        total_final_label.configure(text=total_final)
+        total_final_label.configure(text=texto_total)
         
 
     except ValueError:
@@ -246,7 +284,7 @@ def guardar_en_pdf(calculo):
 
     # Guardar y cerrar el archivo PDF
     c.save()
-    messagebox.showinfo("Guardar PDF", f"El reporte ha sido guardado como {pdf_path}")
+    messagebox.showinfo("Guardar PDF", f"El reporte ha sido guardado como {pdf_path}")   
 
 
 # Ejecutar la aplicación
