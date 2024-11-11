@@ -11,6 +11,22 @@ app.title("Inicio de Sesión")
 usuario_correcto = "a"
 contraseña_correcta = "a"
 
+def limpiar_frame(frame):
+    for widget in frame.winfo_children():
+        widget.destroy()
+
+# Crear los marcos
+frame_inicio = ctk.CTkFrame(app)
+frame_calcular = ctk.CTkFrame(app)
+frame_imprimir = ctk.CTkFrame(app)
+frame_opciones = ctk.CTkFrame(app)
+
+def volver_inicio():
+    frame_calcular.pack_forget()
+    frame_imprimir.pack_forget()
+    frame_opciones.pack_forget()
+    frame_inicio.pack()
+
 # Función para iniciar sesión
 def iniciar_sesion():
     usuario = entry_usuario.get()
@@ -25,65 +41,72 @@ def iniciar_sesion():
 # Función para mostrar la pantalla de opciones
 def mostrar_pantalla_opciones():
     limpiar_pantalla()
+    limpiar_frame(frame_opciones)
+    frame_opciones.pack()
 
-    ctk.CTkLabel(app, text="Seleccione una opción", font=("Arial", 16)).pack(pady=10)
+    ctk.CTkLabel(frame_opciones, text="Seleccione una opción", font=("Arial", 16)).pack(pady=10)
 
-    calcular_btn = ctk.CTkButton(app, text="Calcular", font=("Arial", 16), command=mostrar_pantalla_calculo)
+    calcular_btn = ctk.CTkButton(frame_opciones, text="Calcular", font=("Arial", 16), command=mostrar_pantalla_calculo)
     calcular_btn.pack(pady=10)
 
-    imprimir_ventas_btn = ctk.CTkButton(app, text="Imprimir Ventas", font=("Arial", 16))
+    imprimir_ventas_btn = ctk.CTkButton(frame_opciones, text="Imprimir Ventas", font=("Arial", 16), command=mostrar_pantalla_imprimir)
     imprimir_ventas_btn.pack(pady=10)
 
 # Función para mostrar la pantalla de cálculo de consumo
 def mostrar_pantalla_calculo():
     limpiar_pantalla()
+    limpiar_frame(frame_calcular)
 
-    ctk.CTkLabel(app, text="Ingrese lectura inicial (kWh):").pack(pady=5)
+    frame_calcular.pack()
+
+    ctk.CTkLabel(frame_calcular, text="Ingrese lectura inicial (kWh):").pack(pady=5)
     global entry_inicial, entry_final
-    entry_inicial = ctk.CTkEntry(app)
+    entry_inicial = ctk.CTkEntry(frame_calcular)
     entry_inicial.pack(pady=5)
 
-    ctk.CTkLabel(app, text="Ingrese lectura final (kWh):").pack(pady=5)
-    entry_final = ctk.CTkEntry(app)
+    ctk.CTkLabel(frame_calcular, text="Ingrese lectura final (kWh):").pack(pady=5)
+    entry_final = ctk.CTkEntry(frame_calcular)
     entry_final.pack(pady=5)
 
-    # Botón para calcular
-    boton_calcular = ctk.CTkButton(app, text="Calcular Consumo", command=calcular_consumo)
+    boton_calcular = ctk.CTkButton(frame_calcular, text="Calcular Consumo", command=calcular_consumo)
     boton_calcular.pack(pady=10)
 
-    # Etiqueta para mostrar el resultado
-    global monto_label1
-    global monto_label2
-    global monto_label3
-    global monto_label4
-    global alumbrado_publico
-    global label_iva
-    global total_final_label
- 
+    global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label
 
-    monto_label1 = ctk.CTkLabel(app, text="Rango 1: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    monto_label2 = ctk.CTkLabel(app, text="Rango 2: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    monto_label3 = ctk.CTkLabel(app, text="Rango 3: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    monto_label4 = ctk.CTkLabel(app, text="Rango 4: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
-    alumbrado_publico = ctk.CTkLabel(app, text="Alumbrado Publico: $0.00", font=("Arial", 14))
+    monto_label1 = ctk.CTkLabel(frame_calcular, text="Consumo primeros 600 kWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    monto_label2 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    monto_label3 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    monto_label4 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
+    alumbrado_publico = ctk.CTkLabel(frame_calcular, text="Alumbrado Publico: $0.00", font=("Arial", 14))
+    label_iva = ctk.CTkLabel(frame_calcular, text="IVA: $0.00", font=("Arial", 14))
+    total_final_label = ctk.CTkLabel(frame_calcular, text="Consumo Total: 0 kWh\nCosto Total con IVA: $0.00", font=("Arial", 14))
 
-    label_iva = ctk.CTkLabel(app, text="Iva (21%): ", font=("Arial", 14))
+    monto_label1.pack(pady=5)
+    monto_label2.pack(pady=5)
+    monto_label3.pack(pady=5)
+    monto_label4.pack(pady=5)
+    alumbrado_publico.pack(pady=5)
+    label_iva.pack(pady=5)
+    total_final_label.pack(pady=5)
 
-    total_final_label = ctk.CTkLabel(app, text="Consumo Total: 0 kWh\nCosto Total con iva(%21): $0.00", font=("Arial", 14))
+    volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=mostrar_pantalla_opciones)
+    volver_btn_calcular.pack(pady=10)
 
-    monto_label1.pack(pady=20)
-    monto_label2.pack(pady=20)
-    monto_label3.pack(pady=20)
-    monto_label4.pack(pady=20)
-    alumbrado_publico.pack(pady=20)
+# Función para mostrar la pantalla de impresión de ventas
+def mostrar_pantalla_imprimir():
+    limpiar_pantalla()
+    limpiar_frame(frame_imprimir)
 
-    label_iva.pack(pady=20)
-    total_final_label.pack(pady=20)
- 
+    frame_imprimir.pack()
+
+    ctk.CTkLabel(frame_imprimir, text="Pantalla de Imprimir Ventas", font=("Arial", 16)).pack(pady=10)
+
+    volver_btn_imprimir = ctk.CTkButton(frame_imprimir, text="Volver", command=mostrar_pantalla_opciones)
+    volver_btn_imprimir.pack(pady=10)
 
 # Función para calcular el consumo
 def calcular_consumo():
-    # Tarifas de DPEC en ARS por kWh
+   # Tarifas de DPEC por kWh
     TARIFA_BASE = 123.9694  # Primeros 600 kWh
     TARIFA_EXCEDENTE_1 = 134.8474  # Excedente de 600 a 742 kWh (142 kWh)
     TARIFA_EXCEDENTE_2 = 162.1050  # Excedente de 742 a 785 kWh (43 kWh)
@@ -109,15 +132,18 @@ def calcular_consumo():
         costo_alumbrado = 4426
 
         # Mostrar resultado en la etiqueta
-        texto_rango1 = f"Rango 1: {rango1} kWh\nCosto Rango 1: ${costo_rango1:.2f}"
-        texto_rango2 = f"Rango 2: {rango2} kWh\nCosto Rango 2: ${costo_rango2:.2f}"
-        texto_rango3 = f"Rango 3: {rango3} kWh\nCosto Rango 3: ${costo_rango3:.2f}"
-        texto_rango4 = f"Rango 4: {rango4} kWh\nCosto Rango 4: ${costo_rango4:.2f}"
+        texto_rango1 = f"Consumo primeros 600 kWh a $123.9694: {rango1} kWh\nConsumo primeros: ${costo_rango1:.2f}"
+        texto_rango2 = f"Consumo excedente de 600 KWh/bim 142 KWh a $134.8474: {rango2} kWh\nConsumo excedente: ${costo_rango2:.2f}"
+        texto_rango3 = f"Consumo excedente de 600 KWh/bim 43 KWh a $162.1050: {rango3} kWh\nConsumo excedente: ${costo_rango3:.2f}"
+        texto_rango4 = f"Consumo excedente de 600 KWh/bim 503 KWh a $166.6580: {rango4} kWh\nConsumo excedente: ${costo_rango4:.2f}"
         texto_alumbrado= f"Alumbrado Publico: ${costo_alumbrado:.2f}"
         iva =  costo_total * 0.21
         
         texto_iva = f"IVA consumidor final 21% : {iva}"
         total_final = f"Consumo Total: {consumo_total} kWh\nIva 21%: ${costo_total:.2f}"
+
+        volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=volver_inicio)
+        volver_btn_calcular.pack(pady=10)
 
         
         
@@ -135,23 +161,28 @@ def calcular_consumo():
 
 # Función para limpiar la pantalla actual
 def limpiar_pantalla():
-    for widget in app.winfo_children():
-        widget.pack_forget()
+    frame_inicio.pack_forget()
+    frame_opciones.pack_forget()
+    frame_calcular.pack_forget()
+    frame_imprimir.pack_forget()
+
+
 
 # Widgets de inicio de sesión
-label_usuario = ctk.CTkLabel(app, text="Usuario:")
+frame_inicio.pack()
+label_usuario = ctk.CTkLabel(frame_inicio, text="Usuario:")
 label_usuario.pack(pady=10)
 
-entry_usuario = ctk.CTkEntry(app)
+entry_usuario = ctk.CTkEntry(frame_inicio)
 entry_usuario.pack(pady=10)
 
-label_contraseña = ctk.CTkLabel(app, text="Contraseña:")
+label_contraseña = ctk.CTkLabel(frame_inicio, text="Contraseña:")
 label_contraseña.pack(pady=10)
 
-entry_contraseña = ctk.CTkEntry(app, show="*")
+entry_contraseña = ctk.CTkEntry(frame_inicio, show="*")
 entry_contraseña.pack(pady=10)
 
-boton_iniciar_sesion = ctk.CTkButton(app, text="Iniciar Sesión", command=iniciar_sesion)
+boton_iniciar_sesion = ctk.CTkButton(frame_inicio, text="Iniciar Sesión", command=iniciar_sesion)
 boton_iniciar_sesion.pack(pady=20)
 
 # Ejecutar la aplicación
