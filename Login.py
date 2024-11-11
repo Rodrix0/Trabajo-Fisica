@@ -63,6 +63,7 @@ def mostrar_pantalla_calculo():
 
     frame_calcular.pack()
 
+    # Configura tus entradas y etiquetas
     ctk.CTkLabel(frame_calcular, text="Ingrese lectura inicial (kWh):").pack(pady=5)
     global entry_inicial, entry_final
     entry_inicial = ctk.CTkEntry(frame_calcular)
@@ -75,8 +76,8 @@ def mostrar_pantalla_calculo():
     boton_calcular = ctk.CTkButton(frame_calcular, text="Calcular Consumo", command=calcular_consumo)
     boton_calcular.pack(pady=10)
 
+    # Configura tus etiquetas de resultado
     global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label
-
     monto_label1 = ctk.CTkLabel(frame_calcular, text="Consumo primeros 600 kWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label2 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label3 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
@@ -93,6 +94,10 @@ def mostrar_pantalla_calculo():
     label_iva.pack(pady=5)
     total_final_label.pack(pady=5)
 
+    # Botón para guardar el cálculo
+    boton_guardar = ctk.CTkButton(frame_calcular, text="Guardar Cálculo", command=guardar_calculo)
+    boton_guardar.pack(pady=10)
+
     volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=mostrar_pantalla_opciones)
     volver_btn_calcular.pack(pady=10)
 
@@ -102,12 +107,17 @@ def mostrar_pantalla_imprimir():
     limpiar_frame(frame_imprimir)
 
     frame_imprimir.pack()
+    ctk.CTkLabel(frame_imprimir, text="Seleccione el cálculo para imprimir en PDF:", font=("Arial", 16)).pack(pady=10)
 
-    ctk.CTkLabel(frame_imprimir, text="Pantalla de Imprimir Ventas", font=("Arial", 16)).pack(pady=10)
-
-    # Botón para guardar en PDF
-    guardar_pdf_btn = ctk.CTkButton(frame_imprimir, text="Guardar en PDF", command=guardar_en_pdf)
-    guardar_pdf_btn.pack(pady=10)
+    # Mostrar cada cálculo guardado como un botón para imprimir en PDF
+    for i, calculo in enumerate(calculos_guardados):
+        texto_boton = f"Cálculo {i + 1}"
+        boton_calculo = ctk.CTkButton(
+            frame_imprimir,
+            text=texto_boton,
+            command=lambda calc=calculo: guardar_en_pdf(calc)
+        )
+        boton_calculo.pack(pady=5)
 
     volver_btn_imprimir = ctk.CTkButton(frame_imprimir, text="Volver", command=mostrar_pantalla_opciones)
     volver_btn_imprimir.pack(pady=10)
@@ -163,6 +173,21 @@ def calcular_consumo():
 
     except ValueError:
         messagebox.showwarning("Error", "Por favor ingrese valores numéricos válidos.")
+calculos_guardados = []
+# Función para guardar el cálculo actual en la lista
+def guardar_calculo():
+    calculo = {
+        "monto_label1": monto_label1.cget("text"),
+        "monto_label2": monto_label2.cget("text"),
+        "monto_label3": monto_label3.cget("text"),
+        "monto_label4": monto_label4.cget("text"),
+        "alumbrado_publico": alumbrado_publico.cget("text"),
+        "label_iva": label_iva.cget("text"),
+        "total_final_label": total_final_label.cget("text")
+    }
+    calculos_guardados.append(calculo)
+    messagebox.showinfo("Guardar Cálculo", "El cálculo ha sido guardado.")
+    mostrar_pantalla_opciones()
 
 # Función para limpiar la pantalla actual
 def limpiar_pantalla():
@@ -191,8 +216,10 @@ boton_iniciar_sesion = ctk.CTkButton(frame_inicio, text="Iniciar Sesión", comma
 boton_iniciar_sesion.pack(pady=20)
 
 
-def guardar_en_pdf():
-    pdf_path = "calculo_consumo.pdf"
+# Función para guardar en PDF el cálculo seleccionado
+def guardar_en_pdf(calculo):
+    i = calculos_guardados.index(calculo)
+    pdf_path = "calculo_consumo_" + str(i+1) + ".pdf"
     c = canvas.Canvas(pdf_path, pagesize=letter)
     width, height = letter
 
@@ -203,19 +230,19 @@ def guardar_en_pdf():
     # Agregar los cálculos al PDF
     y = height - 100
     c.setFont("Helvetica", 12)
-    c.drawString(50, y, monto_label1.cget("text"))
+    c.drawString(50, y, calculo["monto_label1"])
     y -= 40
-    c.drawString(50, y, monto_label2.cget("text"))
+    c.drawString(50, y, calculo["monto_label2"])
     y -= 40
-    c.drawString(50, y, monto_label3.cget("text"))
+    c.drawString(50, y, calculo["monto_label3"])
     y -= 40
-    c.drawString(50, y, monto_label4.cget("text"))
+    c.drawString(50, y, calculo["monto_label4"])
     y -= 40
-    c.drawString(50, y, alumbrado_publico.cget("text"))
+    c.drawString(50, y, calculo["alumbrado_publico"])
     y -= 40
-    c.drawString(50, y, label_iva.cget("text"))
+    c.drawString(50, y, calculo["label_iva"])
     y -= 40
-    c.drawString(50, y, total_final_label.cget("text"))
+    c.drawString(50, y, calculo["total_final_label"])
 
     # Guardar y cerrar el archivo PDF
     c.save()
