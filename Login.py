@@ -1,7 +1,9 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import tkinter as tk
-
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import os
 # Crear la ventana principal
 app = ctk.CTk()
 app.geometry("300x320")
@@ -18,6 +20,8 @@ def limpiar_frame(frame):
 # Crear los marcos
 frame_inicio = ctk.CTkFrame(app)
 frame_calcular = ctk.CTkFrame(app)
+frame_consumo = ctk.CTkFrame(app)
+
 frame_imprimir = ctk.CTkFrame(app)
 frame_opciones = ctk.CTkFrame(app)
 
@@ -101,11 +105,17 @@ def mostrar_pantalla_imprimir():
 
     ctk.CTkLabel(frame_imprimir, text="Pantalla de Imprimir Ventas", font=("Arial", 16)).pack(pady=10)
 
+    # Botón para guardar en PDF
+    guardar_pdf_btn = ctk.CTkButton(frame_imprimir, text="Guardar en PDF", command=guardar_en_pdf)
+    guardar_pdf_btn.pack(pady=10)
+
     volver_btn_imprimir = ctk.CTkButton(frame_imprimir, text="Volver", command=mostrar_pantalla_opciones)
     volver_btn_imprimir.pack(pady=10)
 
 # Función para calcular el consumo
 def calcular_consumo():
+    limpiar_frame(frame_consumo)
+
    # Tarifas de DPEC por kWh
     TARIFA_BASE = 123.9694  # Primeros 600 kWh
     TARIFA_EXCEDENTE_1 = 134.8474  # Excedente de 600 a 742 kWh (142 kWh)
@@ -142,11 +152,6 @@ def calcular_consumo():
         texto_iva = f"IVA consumidor final 21% : {iva}"
         total_final = f"Consumo Total: {consumo_total} kWh\nIva 21%: ${costo_total:.2f}"
 
-        volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=volver_inicio)
-        volver_btn_calcular.pack(pady=10)
-
-        
-        
         monto_label1.configure(text=texto_rango1)
         monto_label2.configure(text=texto_rango2)
         monto_label3.configure(text=texto_rango3)
@@ -184,6 +189,38 @@ entry_contraseña.pack(pady=10)
 
 boton_iniciar_sesion = ctk.CTkButton(frame_inicio, text="Iniciar Sesión", command=iniciar_sesion)
 boton_iniciar_sesion.pack(pady=20)
+
+
+def guardar_en_pdf():
+    pdf_path = "calculo_consumo.pdf"
+    c = canvas.Canvas(pdf_path, pagesize=letter)
+    width, height = letter
+
+    # Agregar título
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(100, height - 50, "Reporte de Consumo")
+
+    # Agregar los cálculos al PDF
+    y = height - 100
+    c.setFont("Helvetica", 12)
+    c.drawString(50, y, monto_label1.cget("text"))
+    y -= 40
+    c.drawString(50, y, monto_label2.cget("text"))
+    y -= 40
+    c.drawString(50, y, monto_label3.cget("text"))
+    y -= 40
+    c.drawString(50, y, monto_label4.cget("text"))
+    y -= 40
+    c.drawString(50, y, alumbrado_publico.cget("text"))
+    y -= 40
+    c.drawString(50, y, label_iva.cget("text"))
+    y -= 40
+    c.drawString(50, y, total_final_label.cget("text"))
+
+    # Guardar y cerrar el archivo PDF
+    c.save()
+    messagebox.showinfo("Guardar PDF", f"El reporte ha sido guardado como {pdf_path}")
+
 
 # Ejecutar la aplicación
 app.mainloop()
