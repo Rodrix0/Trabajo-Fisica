@@ -26,8 +26,8 @@ label_imagen.pack(padx=5, pady=5)
 label_imagen.image = fondo_inicio
 
 # Credenciales correctas
-usuario_correcto = "a"#walter
-contraseña_correcta = "a"#fisica
+usuario_correcto = "walter"
+contraseña_correcta = "fisica"
 entry_usuario = None
 entry_contraseña = None
 
