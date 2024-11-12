@@ -115,11 +115,11 @@ def mostrar_pantalla_calculo():
     ctk.CTkLabel(frame_calcular, text="Ingrese lectura inicial (kWh):").pack(pady=5)
     global entry_inicial, entry_final
     entry_inicial = ctk.CTkEntry(frame_calcular)
-    entry_inicial.pack(pady=5)
+    entry_inicial.pack(pady=3)
 
     ctk.CTkLabel(frame_calcular, text="Ingrese lectura final (kWh):").pack(pady=5)
     entry_final = ctk.CTkEntry(frame_calcular)
-    entry_final.pack(pady=5)
+    entry_final.pack(pady=3)
 
     # dropdown para seleccionar el nivel de subsidio
     ctk.CTkLabel(frame_calcular, text="Seleccione el nivel de subsidio:").pack(pady=5)
@@ -127,20 +127,20 @@ def mostrar_pantalla_calculo():
     global valor_subsidio
 
     entry_subsidio = ctk.CTkComboBox(frame_calcular, values=["Nivel 1", "Nivel 2", "Nivel 3"]) 
-    entry_subsidio.pack(pady=5)
+    entry_subsidio.pack(pady=3)
 
     # Botón para obtener el valor seleccionado
     btn_obtener = ctk.CTkButton(frame_calcular, text="Obtener Subsidio", command=obtener_subsidio,fg_color="red",          # Color de fondo
                             hover_color="white",            # Color al pasar el mouse
                             text_color="black",            # Color del texto
                             corner_radius=10)
-    btn_obtener.pack(pady=10)
+    btn_obtener.pack(pady=5)
 
     boton_calcular = ctk.CTkButton(frame_calcular, text="Calcular Consumo", command=calcular_consumo,fg_color="red",          # Color de fondo
                             hover_color="white",            # Color al pasar el mouse
                             text_color="black",            # Color del texto
                             corner_radius=10)
-    boton_calcular.pack(pady=10)
+    boton_calcular.pack(pady=5)
 
 # Configura tus etiquetas de resultado
     global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label, subsidio_label, label_corriente
@@ -151,18 +151,18 @@ def mostrar_pantalla_calculo():
     alumbrado_publico = ctk.CTkLabel(frame_calcular, text="Alumbrado Publico: $0.00", font=("Arial", 14))
 
     label_iva = ctk.CTkLabel(frame_calcular, text="IVA: $0.00", font=("Arial", 14))
-    label_corriente=ctk.CTkLabel(frame_calcular, text="Corriente: $0.00", font=("Arial", 14))
+    label_corriente=ctk.CTkLabel(frame_calcular, text="Corriente: 0.00 A", font=("Arial", 14))
 
     total_final_label = ctk.CTkLabel(frame_calcular, text="Total Final: $0.00", font=("Arial", 14))
 
-    monto_label1.pack(pady=2)
-    monto_label2.pack(pady=2)
-    monto_label3.pack(pady=2)
-    monto_label4.pack(pady=2)
-    alumbrado_publico.pack(pady=2)
+    monto_label1.pack(pady=1)
+    monto_label2.pack(pady=1)
+    monto_label3.pack(pady=1)
+    monto_label4.pack(pady=1)
+    alumbrado_publico.pack(pady=1)
     label_iva.pack(pady=1)
-    label_corriente.pack(pady=2)
-    total_final_label.pack(pady=2)
+    label_corriente.pack(pady=1)
+    total_final_label.pack(pady=1)
 
 
     # Botón para guardar el cálculo
@@ -170,13 +170,13 @@ def mostrar_pantalla_calculo():
                             hover_color="white",            # Color al pasar el mouse
                             text_color="black",            # Color del texto
                             corner_radius=10)
-    boton_guardar.pack(pady=10)
+    boton_guardar.pack(pady=5)
 
     volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=mostrar_pantalla_opciones,fg_color="red",          # Color de fondo
                             hover_color="white",            # Color al pasar el mouse
                             text_color="black",            # Color del texto
                             corner_radius=10)
-    volver_btn_calcular.pack(pady=10)
+    volver_btn_calcular.pack(pady=5)
 
 
 
@@ -273,7 +273,7 @@ def calcular_consumo():
         texto_rango4 = f"Consumo excedente de 600 KWh/bim 503 KWh a $166.6580: {rango4} kWh\nConsumo excedente: ${costo_rango4:.2f}"
         texto_alumbrado= f"Alumbrado Publico: ${costo_alumbrado:.2f}"
         texto_corriente = f"Corriente promedio consumida: {corriente_promedio:.2f} A"
-        texto_iva = f"IVA consumidor final 21% : {iva:.2f}"
+        texto_iva = f"IVA consumidor final 21% : $ {iva:.2f}"
         texto_total = f"Total final: ${total_bimestral:.2f}"
     
 
