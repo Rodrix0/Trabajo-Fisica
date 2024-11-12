@@ -4,15 +4,30 @@ import tkinter as tk
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
+from PIL import Image, ImageTk  # Necesario si usas un formato distinto a .png
+
 
 # Crear la ventana principal
 app = ctk.CTk()
-app.geometry("300x320")
+app.geometry("600x650")
 app.title("inicio de Sesión")
 
+fondo_inicio_data = Image.open("fondo.jpg")  # Carga la imagen
+fondo_inicio_resized = fondo_inicio_data.resize((700, 400))
+
+# Convertir la imagen redimensionada a formato PhotoImage
+fondo_inicio = ImageTk.PhotoImage(fondo_inicio_resized)
+
+# Crear un widget Label para mostrar la imagen
+label_imagen = ctk.CTkLabel(master=app, text="", image=fondo_inicio)
+label_imagen.pack(padx=5, pady=5)
+
+# Es importante mantener una referencia a la imagen
+label_imagen.image = fondo_inicio
+
 # Credenciales correctas
-usuario_correcto = "a"
-contraseña_correcta = "a"
+usuario_correcto = "a"#walter
+contraseña_correcta = "a"#fisica
 entry_usuario = None
 entry_contraseña = None
 
@@ -66,7 +81,10 @@ label_contraseña.pack(pady=10)
 entry_contraseña = ctk.CTkEntry(frame_inicio, show="*")
 entry_contraseña.pack(pady=10)
 
-boton_iniciar_sesion = ctk.CTkButton(frame_inicio, text="Iniciar Sesión", command=iniciar_sesion)
+boton_iniciar_sesion = ctk.CTkButton(frame_inicio, text="Iniciar Sesión", command=iniciar_sesion,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
 boton_iniciar_sesion.pack(pady=20)
 
 def obtener_subsidio():
@@ -86,7 +104,7 @@ def obtener_subsidio():
 
 
 def mostrar_pantalla_calculo():
-    app.geometry("300x800")
+    app.geometry("600x1000")
     app.title("Calculo de Consumo")
     limpiar_pantalla()
     limpiar_frame(frame_calcular)
@@ -112,10 +130,16 @@ def mostrar_pantalla_calculo():
     entry_subsidio.pack(pady=5)
 
     # Botón para obtener el valor seleccionado
-    btn_obtener = ctk.CTkButton(frame_calcular, text="Obtener Subsidio", command=obtener_subsidio)
+    btn_obtener = ctk.CTkButton(frame_calcular, text="Obtener Subsidio", command=obtener_subsidio,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     btn_obtener.pack(pady=10)
 
-    boton_calcular = ctk.CTkButton(frame_calcular, text="Calcular Consumo", command=calcular_consumo)
+    boton_calcular = ctk.CTkButton(frame_calcular, text="Calcular Consumo", command=calcular_consumo,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     boton_calcular.pack(pady=10)
 
 # Configura tus etiquetas de resultado
@@ -142,10 +166,16 @@ def mostrar_pantalla_calculo():
 
 
     # Botón para guardar el cálculo
-    boton_guardar = ctk.CTkButton(frame_calcular, text="Guardar Cálculo", command=guardar_calculo)
+    boton_guardar = ctk.CTkButton(frame_calcular, text="Guardar Cálculo", command=guardar_calculo,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     boton_guardar.pack(pady=10)
 
-    volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=mostrar_pantalla_opciones)
+    volver_btn_calcular = ctk.CTkButton(frame_calcular, text="Volver", command=mostrar_pantalla_opciones,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     volver_btn_calcular.pack(pady=10)
 
 
@@ -158,10 +188,16 @@ def mostrar_pantalla_opciones():
 
     ctk.CTkLabel(frame_opciones, text="Seleccione una opción", font=("Arial", 16)).pack(pady=10)
 
-    calcular_btn = ctk.CTkButton(frame_opciones, text="Calcular", font=("Arial", 16), command=mostrar_pantalla_calculo)
+    calcular_btn = ctk.CTkButton(frame_opciones, text="Calcular", font=("Arial", 16), command=mostrar_pantalla_calculo,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     calcular_btn.pack(pady=10)
 
-    imprimir_ventas_btn = ctk.CTkButton(frame_opciones, text="Imprimir Ventas", font=("Arial", 16), command=mostrar_pantalla_imprimir)
+    imprimir_ventas_btn = ctk.CTkButton(frame_opciones, text="Imprimir Ventas", font=("Arial", 16), command=mostrar_pantalla_imprimir,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     imprimir_ventas_btn.pack(pady=10)
 
 
@@ -178,11 +214,17 @@ def mostrar_pantalla_imprimir():
         boton_calculo = ctk.CTkButton(
             frame_imprimir,
             text=texto_boton,
-            command=lambda calc=calculo: guardar_en_pdf(calc)
-        )
+            command=lambda calc=calculo: guardar_en_pdf(calc),fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
+        
         boton_calculo.pack(pady=5)
 
-    volver_btn_imprimir = ctk.CTkButton(frame_imprimir, text="Volver", command=mostrar_pantalla_opciones)
+    volver_btn_imprimir = ctk.CTkButton(frame_imprimir, text="Volver", command=mostrar_pantalla_opciones,fg_color="red",          # Color de fondo
+                            hover_color="white",            # Color al pasar el mouse
+                            text_color="black",            # Color del texto
+                            corner_radius=10)
     volver_btn_imprimir.pack(pady=10)
 
 
