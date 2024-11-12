@@ -57,11 +57,12 @@ def mostrar_pantalla_opciones():
     imprimir_ventas_btn = ctk.CTkButton(frame_opciones, text="Imprimir Ventas", font=("Arial", 16), command=mostrar_pantalla_imprimir)
     imprimir_ventas_btn.pack(pady=10)
 
-global subsidio_var
-global nivel
-global subsidio 
+
 subsidio = 0
 def actualizar_subsidio(event=None):
+    global subsidio_var
+    global nivel
+    global subsidio 
     nivel = subsidio_var.get()
     if nivel == "Nivel 1":
         subsidio = 64.778
@@ -94,7 +95,7 @@ def mostrar_pantalla_calculo():
     boton_calcular.pack(pady=10)
 
     # Configura tus etiquetas de resultado
-    global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label, subsidio_label
+    global monto_label1, monto_label2, monto_label3, monto_label4, alumbrado_publico, label_iva, total_final_label, subsidio_label,label_corriente
     monto_label1 = ctk.CTkLabel(frame_calcular, text="Consumo primeros 600 kWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label2 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
     monto_label3 = ctk.CTkLabel(frame_calcular, text="Consumo excedente de 600 KWh: 0 kWh\nCosto Total: $0.00", font=("Arial", 14))
@@ -112,6 +113,8 @@ def mostrar_pantalla_calculo():
     subsidio_combo.bind("<<ComboboxSelected>>", actualizar_subsidio)
 
     label_iva = ctk.CTkLabel(frame_calcular, text="IVA: $0.00", font=("Arial", 14))
+    label_corriente=ctk.CTkLabel(frame_calcular, text="Corriente: $0.00", font=("Arial", 14))
+
     total_final_label = ctk.CTkLabel(frame_calcular, text="Total Final: $0.00", font=("Arial", 14))
     
 
@@ -122,6 +125,7 @@ def mostrar_pantalla_calculo():
     alumbrado_publico.pack(pady=5)
     label_iva.pack(pady=5)
     subsidio_text.pack(pady=5)
+    label_corriente.pack(pady=5)
     total_final_label.pack(pady=5)
 
 
@@ -158,6 +162,7 @@ def mostrar_pantalla_imprimir():
 
 # Función para calcular el consumo
 def calcular_consumo():
+    global subsidio  # Para acceder a la variable global en esta función
     limpiar_frame(frame_consumo)
 
    # Tarifas de DPEC por kWh
@@ -165,6 +170,9 @@ def calcular_consumo():
     TARIFA_EXCEDENTE_1 = 134.8474  # Excedente de 600 a 742 kWh (142 kWh)
     TARIFA_EXCEDENTE_2 = 162.1050  # Excedente de 742 a 785 kWh (43 kWh)
     TARIFA_EXCEDENTE_3 = 166.6580  # Excedente mayor a 785 kWh
+    VOLTAJE = 220  # Voltaje de trabajo
+
+
 
     try:
         inicial = float(entry_inicial.get())
@@ -189,6 +197,13 @@ def calcular_consumo():
         # Total bimestral incluyendo alumbrado público e IVA
         total_bimestral = costo_total + costo_alumbrado + iva - (consumo_total * subsidio)
 
+        # Cálculo de la corriente
+        potencia_promedio = consumo_total * 1000 / (24 * 60)  # Conversión de kWh a W y tiempo promedio en minutos
+        corriente_promedio = potencia_promedio / VOLTAJE
+
+
+
+
         # Mostrar resultado en la etiqueta
         texto_rango1 = f"Consumo primeros 600 kWh a $123.9694: {rango1} kWh\nConsumo primeros: ${costo_rango1:.2f}"
         texto_rango2 = f"Consumo excedente de 600 KWh/bim 142 KWh a $134.8474: {rango2} kWh\nConsumo excedente: ${costo_rango2:.2f}"
@@ -197,6 +212,8 @@ def calcular_consumo():
         texto_alumbrado= f"Alumbrado Publico: ${costo_alumbrado:.2f}"
         
         texto_iva = f"IVA consumidor final 21% : {iva:.2f}"
+        texto_corriente = f"Corriente promedio consumida: {corriente_promedio:.2f} A"
+
         texto_total = f"Total final: ${total_bimestral:.2f}"
     
 
@@ -206,7 +223,9 @@ def calcular_consumo():
         monto_label4.configure(text=texto_rango4)
         alumbrado_publico.configure(text=texto_alumbrado)
         label_iva.configure(text=texto_iva)
+        label_corriente.configure(text=texto_corriente)
         total_final_label.configure(text=texto_total)
+
         
 
     except ValueError:
@@ -221,6 +240,7 @@ def guardar_calculo():
         "monto_label4": monto_label4.cget("text"),
         "alumbrado_publico": alumbrado_publico.cget("text"),
         "label_iva": label_iva.cget("text"),
+        "label_corriente": label_corriente.cget("text"),
         "total_final_label": total_final_label.cget("text")
     }
     calculos_guardados.append(calculo)
@@ -279,6 +299,8 @@ def guardar_en_pdf(calculo):
     c.drawString(50, y, calculo["alumbrado_publico"])
     y -= 40
     c.drawString(50, y, calculo["label_iva"])
+    y -= 40
+    c.drawString(50, y, calculo["label_corriente"])
     y -= 40
     c.drawString(50, y, calculo["total_final_label"])
 
