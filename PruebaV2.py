@@ -8,7 +8,7 @@ import os
 # Crear la ventana principal
 app = ctk.CTk()
 app.geometry("300x320")
-app.title("Inicio de Sesión")
+app.title("inicio de Sesión")
 
 # Credenciales correctas
 usuario_correcto = "a"
@@ -75,17 +75,19 @@ def obtener_subsidio():
     valor_subsidio = entry_subsidio.get()
 
     if valor_subsidio == "Nivel 1":
-        subsidio = 1000 #64.778
+        subsidio = 64.778
     elif valor_subsidio == "Nivel 2":
-        subsidio = 50 #21.532
+        subsidio = 21.532
     elif valor_subsidio == "Nivel 3":
-        subsidio = 100 #64.778
+        subsidio = 64.778
     else:
         subsidio = 0
     messagebox.showinfo("Subsidio Seleccionado", f"El subsidio correspondiente es: ${subsidio}") 
 
 
 def mostrar_pantalla_calculo():
+    app.geometry("300x800")
+    app.title("Calculo de Consumo")
     limpiar_pantalla()
     limpiar_frame(frame_calcular)
 
